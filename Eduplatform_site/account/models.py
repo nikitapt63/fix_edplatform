@@ -1,8 +1,7 @@
 from django.db import models
-from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
-
-from .mixins import DateTimeMixinModel
+from django.utils.translation import gettext_lazy as _
+from Eduplatform_site.mixins import DateTimeMixinModel
 from .managers import CustomUserManager
 
 
@@ -13,36 +12,38 @@ class User(AbstractBaseUser, PermissionsMixin, DateTimeMixinModel):
     first_name = models.CharField(_("first name"), max_length=150, blank=True)
     last_name = models.CharField(_("last name"), max_length=150, blank=True)
     email = models.EmailField(_("email address"), unique=True)
-    is_staff = models.BooleanField(_("staff status"), default=False,)
-    is_active = models.BooleanField(_("active"), default=True)
+    is_staff = models.BooleanField(_("staff status"),default=False,)
+    is_active = models.BooleanField(_("active"),default=True)
 
     objects = CustomUserManager()
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ['first_name', 'last_name']
+    REQUIRED_FIELDS = ['first_name','last_name']
 
     def __str__(self):
-        return f'{self.id}, {self.email} '
+        return f'{self.email} '
 
     class Meta:
         verbose_name = _("user")
         verbose_name_plural = _("users")
 
 
-class Teacher(models.Model, DateTimeMixinModel):
+class Teacher(models.Model,DateTimeMixinModel):
     user = models.ForeignKey(User, on_delete = models.CASCADE)
+    photo = models.ManyToManyField('Photo', blank=True, null=True)
 
     def __str__(self):
-        return f'{self.id}, {self.user}'
+        return f'{self.id}, user-{self.user}'
 
     class Meta:
         verbose_name = _("teacher")
         verbose_name_plural = _("teachers")
 
 
-class Student(models.Model, DateTimeMixinModel):
+class Student(models.Model,DateTimeMixinModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    rating = models.FloatField()
+    rating = models.FloatField(null=True)
+    photo = models.ManyToManyField('Photo', blank=True, null=True)
 
     def __str__(self):
         return f'{self.id}, user - {self.user}'
@@ -51,30 +52,29 @@ class Student(models.Model, DateTimeMixinModel):
         verbose_name = _("student")
         verbose_name_plural = _("students")
 
-
-class Photo(models.Model, DateTimeMixinModel):
+class Photo(models.Model,DateTimeMixinModel):
     photo = models.ImageField(upload_to='image/%Y/%m/%d/')
-    teacher = models.ForeignKey(Teacher, models.CASCADE, blank=True, null=True)
-    student = models.ForeignKey(Student, models.CASCADE, blank=True, null=True)
 
     def __str__(self):
-        return f'{self.id}, path - {self.photo}'
+        return f'{self.id}, path-{self.photo}'
 
     class Meta:
         verbose_name = _("photo")
         verbose_name_plural = _("photos")
+        unique_together = ['photo',]
 
 
 class Group(models.Model, DateTimeMixinModel):
     group_name = models.CharField(max_length=50)
-    course = models.ForeignKey("learning.Course", on_delete=models.CASCADE)
-    teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True)
-    student = models.ManyToManyField(Student, blank=True)
+    course = models.ForeignKey('learning.Course', on_delete=models.CASCADE, null=True)
+    teacher = models.ForeignKey(Teacher,on_delete=models.SET_NULL,null=True)
+    student = models.ManyToManyField(Student,blank=True)
+
+    def __str__(self):
+        return f'{self.group_name}, teacher-{self.teacher}'
 
     class Meta:
         verbose_name = _("students_group")
         verbose_name_plural = _("students_groups")
-        unique_together = (("course", "teacher", "group_name"),)
 
-    def __str__(self):
-        return f'{self.group_name}, teacher - {self.teacher}'
+

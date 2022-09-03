@@ -1,1 +1,2 @@
-# fix_edplatform
+# eduplatform
+General educational project

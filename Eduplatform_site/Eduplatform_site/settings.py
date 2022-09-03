@@ -1,3 +1,4 @@
+
 import os
 from pathlib import Path
 from dotenv import load_dotenv
@@ -25,7 +26,7 @@ INSTALLED_APPS = [
     *['account.apps.AccountConfig',
       'learning.apps.LearningConfig'
      ],
-    *['rest_framework'
+    *['rest_framework',
      ]
 ]
 MEDIA_URL = '/media/'

@@ -1,9 +1,10 @@
+
 from django.db import models
 from django.core.validators import MinValueValidator
 from django.utils.translation import gettext_lazy as _
 
 from account.models import Teacher, Student
-from account.mixins import DateTimeMixinModel
+from Eduplatform_site.mixins import DateTimeMixinModel
 
 
 __all__ = {'Course', 'Topic', 'Article', 'Test', 'Question', 'Answer', 'Attempt'}
@@ -30,7 +31,7 @@ class Topic(models.Model, DateTimeMixinModel):
     class Meta:
         verbose_name = _("course_topic")
         verbose_name_plural = _("course_topics")
-        ordering = ['numbering',]
+        ordering = ['numbering', ]
 
     def __str__(self):
         return f'{self.id}, {self.topic_name}, course - {self.course}'
@@ -49,7 +50,7 @@ class Article(models.Model, DateTimeMixinModel):
         verbose_name = _("topic_articles")
         verbose_name_plural = _("topic_articles")
 
-    
+
 class Test(models.Model, DateTimeMixinModel):
     topic = models.ForeignKey(Topic, on_delete=models.CASCADE, null=True)
     creator = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True)

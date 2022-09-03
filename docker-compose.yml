@@ -7,8 +7,8 @@ services:
       - ./data/db:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: postgre
-    env_file:
-      - .env
+#    env_file:
+#      - .env.dev
     ports:
       - '5432:5432'
     expose:
@@ -23,7 +23,7 @@ services:
     volumes:
       - .:/code
     env_file:
-      - .env
+      - .env.dev
     ports:
       - "8080:8080"
     depends_on:
