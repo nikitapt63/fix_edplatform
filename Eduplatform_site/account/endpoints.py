@@ -1,7 +1,6 @@
 from rest_framework.generics import ListAPIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import permissions
-from itertools import chain
 
 from .serializers import (UserSerializer,
                           TeacherSerializer,

@@ -26,11 +26,10 @@ class GroupSerializer(serializers.ModelSerializer):
         fields = ('id', 'group_name', 'course', 'teacher', 'student')
 
 
-
 class GroupTeacherSerializer(serializers.ModelSerializer):
     class Meta:
         model = Teacher
-    
+
     def to_representation(self, obj):
         match isinstance(obj, Teacher):
             case True:
@@ -40,6 +39,3 @@ class GroupTeacherSerializer(serializers.ModelSerializer):
             case _:
                 raise Exception("Nothing to serialize.")
         return serializer.data
-
-        
-

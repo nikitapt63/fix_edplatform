@@ -11,5 +11,5 @@ router.register(r'groups',GroupViewSet)
 
 urlpatterns = [
     path('',include(router.urls)),
-    re_path("teacher/(?P<id>.+)/group", GroupTeacherViewAPI.as_view(), name="teacher_groups"),
+    re_path("teachers/(?P<id>.+)/group", GroupTeacherViewAPI.as_view(), name="teacher_groups"),
 ]
