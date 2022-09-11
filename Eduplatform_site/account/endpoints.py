@@ -1,13 +1,21 @@
+from rest_framework import permissions, mixins, status
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from rest_framework.generics import ListAPIView
-from rest_framework.viewsets import ModelViewSet
-from rest_framework import permissions
+from rest_framework.viewsets import (ModelViewSet, GenericViewSet)
 
 from .serializers import (UserSerializer,
                           TeacherSerializer,
                           StudentSerializer,
                           GroupSerializer,
+                          RegisterSerializer,
+                          LoginSerializer
                           )
-from .models import User, Teacher, Student, Group
+from .models import (User, Teacher, Student, Group)
+
+
+__all__ = {"UserViewSet", "..."}
 
 
 class UserViewSet(ModelViewSet):
@@ -42,3 +50,25 @@ class GroupTeacherViewAPI(ListAPIView):
     def get_queryset(self):
         teacher = self.kwargs["id"]
         return Group.objects.filter(teacher__in=teacher)
+
+
+class RegisterViewApi(mixins.CreateModelMixin, GenericViewSet):
+    serializer_class = RegisterSerializer
+    permission_classes = [permissions.AllowAny]
+
+    def create(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class LoginViewApi(APIView):
+    serializer_class = LoginSerializer
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        user = request.data.get("user")
+        serializer = self.serializer_class(data=user)
+        serializer.is_valid(raise_exception=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
